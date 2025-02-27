@@ -1,0 +1,75 @@
+# General OS and Editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.swn
+*.bak
+*~
+
+# Python-specific
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+*.log
+.env
+.env.*
+
+# SAM build artifacts
+.aws-sam/
+.sam/
+.aws-sam/build/
+.aws-sam/deploy/
+*.zip
+
+# Node.js (if your SAM project has Node.js functions)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Docker (in case you're using docker-lambda for local testing)
+docker-compose.override.yml
+*.tar
+*.dockerfile
+*.dockerenv
+*.env
+.vscode/
+
+# CloudFormation template packaging output
+packaged-template.yaml
+
+# IDE Configurations
+.idea/
+.vscode/
+*.code-workspace
+
+# Lambda Layer directories (optional if you use layers)
+layers/nodejs/node_modules/
+
+# AWS Credentials (for safety - in case someone accidentally adds them)
+*.pem
+*.crt
+*.key
+*.secrets
+
+# Local test files
+test-output/
+debug.log
+coverage/
+
+# Python virtual environment (optional, if using virtualenv)
+venv/
+.env/
+
+# Optional: Ignore logs if you capture logs locally
+*.log
+
+# Optional: Ignore any zip packages you manually create
+*.zip

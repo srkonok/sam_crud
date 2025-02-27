@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 10
+    MemorySize: 128
+    Environment:
+      Variables:
+        DB_HOST: !Ref DBHost
+        DB_USER: !Ref DBUser
+        DB_PASSWORD: !Ref DBPassword
+        DB_NAME: !Ref DBName
+
+Resources:
+  CreateItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: functions/create_item.lambda_handler
+      Layers:
+        - !Ref PythonRequirementsLayer
+      Events:
+        CreateItem:
+          Type: Api
+          Properties:
+            Path: /items
+            Method: POST
+
+  ReadItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: functions/read_item.lambda_handler
+      Layers:
+        - !Ref PythonRequirementsLayer
+      Events:
+        ReadItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: GET
+
+  UpdateItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: functions/update_item.lambda_handler
+      Layers:
+        - !Ref PythonRequirementsLayer
+      Events:
+        UpdateItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: PUT
+
+  DeleteItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: functions/delete_item.lambda_handler
+      Layers:
+        - !Ref PythonRequirementsLayer
+      Events:
+        DeleteItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: DELETE
+
+  PythonRequirementsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: python-requirements
+      Description: Layer with pymysql and dotenv
+      ContentUri: layers/
+      CompatibleRuntimes:
+        - python3.12
+      RetentionPolicy: Delete
+
+Parameters:
+  DBHost:
+    Type: String
+    Default: ""
+    Description: "Database Host"
+
+  DBUser:
+    Type: String
+    Default: ""
+    Description: "Database User"
+
+  DBPassword:
+    Type: String
+    Default: ""
+    Description: "Database Password"
+
+  DBName:
+    Type: String
+    Default: ""
+    Description: "Database Name"
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

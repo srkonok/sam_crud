@@ -1,0 +1,11 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "sam-app"
+resolve_s3 = true
+s3_prefix = "sam-app"
+region = "us-east-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+parameter_overrides = "DBHost=\"65.2.112.73\" DBUser=\"shahriar\" DBPassword=\"Konok@140116\" DBName=\"crud_db\""
+image_repositories = []

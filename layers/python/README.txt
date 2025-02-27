@@ -1,0 +1,1 @@
+This folder should contain the Python libraries like pymysql and dotenv installed via pip.
