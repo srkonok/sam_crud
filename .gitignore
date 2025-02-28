@@ -73,3 +73,5 @@ venv/
 
 # Optional: Ignore any zip packages you manually create
 *.zip
+
+samconfig.toml

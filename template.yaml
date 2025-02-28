@@ -1,11 +1,22 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+  DBHost:
+    Type: String
+  DBUser:
+    Type: String
+  DBPassword:
+    Type: String
+  DBName:
+    Type: String
+
 Globals:
   Function:
     Runtime: python3.12
     Timeout: 10
     MemorySize: 128
+    CodeUri: src/functions  # 👈 All functions in one folder
     Environment:
       Variables:
         DB_HOST: !Ref DBHost
@@ -17,91 +28,57 @@ Resources:
   CreateItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
-      Handler: functions/create_item.lambda_handler
-      Layers:
-        - !Ref PythonRequirementsLayer
+      Handler: create_item.lambda_handler  # No folder prefix
       Events:
-        CreateItem:
+        ApiCreateItem:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /items
             Method: POST
 
   ReadItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
-      Handler: functions/read_item.lambda_handler
-      Layers:
-        - !Ref PythonRequirementsLayer
+      Handler: read_item.lambda_handler  # No folder prefix
       Events:
-        ReadItem:
+        ApiReadItem:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /items/{id}
             Method: GET
 
   UpdateItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
-      Handler: functions/update_item.lambda_handler
-      Layers:
-        - !Ref PythonRequirementsLayer
+      Handler: update_item.lambda_handler  # No folder prefix
       Events:
-        UpdateItem:
+        ApiUpdateItem:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /items/{id}
             Method: PUT
 
   DeleteItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
-      Handler: functions/delete_item.lambda_handler
-      Layers:
-        - !Ref PythonRequirementsLayer
+      Handler: delete_item.lambda_handler  # No folder prefix
       Events:
-        DeleteItem:
+        ApiDeleteItem:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /items/{id}
             Method: DELETE
 
-  PythonRequirementsLayer:
-    Type: AWS::Serverless::LayerVersion
+  MyApi:
+    Type: AWS::Serverless::Api
     Properties:
-      LayerName: python-requirements
-      Description: Layer with pymysql and dotenv
-      ContentUri: layers/
-      CompatibleRuntimes:
-        - python3.12
-      RetentionPolicy: Delete
-
-Parameters:
-  DBHost:
-    Type: String
-    Default: ""
-    Description: "Database Host"
-
-  DBUser:
-    Type: String
-    Default: ""
-    Description: "Database User"
-
-  DBPassword:
-    Type: String
-    Default: ""
-    Description: "Database Password"
-
-  DBName:
-    Type: String
-    Default: ""
-    Description: "Database Name"
+      StageName: Prod
 
 Outputs:
   ApiUrl:
     Description: "API Gateway endpoint URL"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
